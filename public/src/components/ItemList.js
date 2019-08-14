@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import fetch from 'isomorphic-fetch';
-import { Container, Row, Col, Button, Card } from 'reactstrap';
+import { Container, Row, Col, Button, Card, Spinner } from 'reactstrap';
 
 
 class ItemList extends Component {
@@ -156,7 +156,9 @@ timeDifference(current, previous) {
                     </Col>
                 </Row>
             </Container>
-<p><h4>Loading...</h4></p>
+        <Row>
+          <Col sm="12" md={{ size: 6, offset: 5 }}><Spinner color="success" /></Col>
+        </Row>
     </div>  
     );
   }
