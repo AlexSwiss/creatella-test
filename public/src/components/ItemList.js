@@ -12,7 +12,6 @@ class ItemList extends Component {
         limit: 20,
         page: 1,
         total_pages: null,
-
     };
 }
 
@@ -29,6 +28,20 @@ loadUser () {
     })
  );
 }
+
+/*sortByPrice () {
+  const { limit, page, sortByPrice } = this.state;
+  const url = `http://localhost:3000/api/products?_page=${page}&_limit=${limit}&_sort=price`;
+     fetch(url)
+    .then(res => res.json())
+    .then(res =>
+     this.setState({
+          sortByPrice: [...sortByPrice, ...res],
+          scrolling: false,
+          total_pages: sortByPrice.total_pages
+    })
+ );
+}*/
 
 
 loadMore() {
@@ -61,6 +74,41 @@ componentDidMount() {
     }
   });
 }
+
+timeDifference(current, previous) {
+
+  var msPerMinute = 60 * 1000;
+  var msPerHour = msPerMinute * 60;
+  var msPerDay = msPerHour * 24;
+  var msPerMonth = msPerDay * 30;
+  var msPerYear = msPerDay * 365;
+
+  var elapsed = current - previous;
+
+  if (elapsed < msPerMinute) {
+       return Math.round(elapsed/1000) + ' seconds ago';   
+  }
+
+  else if (elapsed < msPerHour) {
+       return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+  }
+
+  else if (elapsed < msPerDay ) {
+       return Math.round(elapsed/msPerHour ) + ' hours ago';   
+  }
+
+  else if (elapsed < msPerMonth) {
+      return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+  }
+
+  else if (elapsed < msPerYear) {
+      return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+  }
+
+  else {
+      return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+  }
+}
   
   render() {
     return (
@@ -68,7 +116,14 @@ componentDidMount() {
       ref="iScroll"
       style={{ height: "600px", overflow: "auto" }}
       >
-      <Container>
+      <h1>Products Grid</h1>
+
+      <p>Here you're sure to find a bargain on some of the finest ascii available to purchase. Be sure to peruse our selection of ascii faces in an exciting range of sizes and prices.</p>
+
+      <p>But first, a word from our sponsors:</p> 
+      <script>document.write(`<img class="ad" src="/ads/?r=' + Math.floor(Math.random()*1000) + '"/>`);</script>
+
+      <Container>      
                 <Row>
                     <Col>
                     {this.state.products.map(function(product, id) {
@@ -77,7 +132,7 @@ componentDidMount() {
                             <Container>
                                 <Row>
                                     <Col>
-                                        <h3>{product.face}</h3>
+                                        <span style={{fontSize: product.size}}>{product.face}</span>
                                     </Col>
                                     <Col>
                                         <h5><span>Price:</span> ${product.price}</h5>
