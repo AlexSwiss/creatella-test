@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import fetch from 'isomorphic-fetch';
-import { Container, Row, Col, Button, Card, Spinner } from 'reactstrap';
+import { Container, Row, Col, Button, Card, Spinner, Alert  } from 'reactstrap';
+import centsToCurrency from 'cents-to-currency';
+
 
 
 class ItemList extends Component {
@@ -15,9 +17,10 @@ class ItemList extends Component {
     };
 }
 
-loadUser () {
+//fetch all products from the api
+loadProducts () {
   const { limit, page, products, sort } = this.state;
-  const url = `http://localhost:3000/api/products?_page=${page}&_limit=${limit}`;
+  const url = `http://localhost:3000/api/products?_page=${page}&_limit=${limit}&_sort=price`;
      fetch(url)
     .then(res => res.json())
     .then(res =>
@@ -29,42 +32,29 @@ loadUser () {
  );
 }
 
-/*sortByPrice () {
-  const { limit, page, sortByPrice } = this.state;
-  const url = `http://localhost:3000/api/products?_page=${page}&_limit=${limit}&_sort=price`;
-     fetch(url)
-    .then(res => res.json())
-    .then(res =>
-     this.setState({
-          sortByPrice: [...sortByPrice, ...res],
-          scrolling: false,
-          total_pages: sortByPrice.total_pages
-    })
- );
-}*/
-
-
+//function to load more products from api
 loadMore() {
   this.setState(
     prevState => ({
       page: prevState.page + 1,
       scrolling: true
     }),
-    this.loadUser
+    this.loadProducts
   );
 };
 
+//load more products from the api on using the iScroll event listener
 handleScroll(){ 
   var lastLi = document.querySelector("ul.container > li:last-child");
   var lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
   var pageOffset = window.pageYOffset + window.innerHeight;
-if (pageOffset > lastLiOffset) {
+    if (pageOffset > lastLiOffset) {
        this.loadMore();
   }
 };
 
 componentWillMount() {
-  this.loadUser();
+  this.loadProducts();
 }
 
 componentDidMount() {
@@ -75,39 +65,48 @@ componentDidMount() {
   });
 }
 
-timeDifference(current, previous) {
-
+/*timeDifference(current, previous) {
+    
   var msPerMinute = 60 * 1000;
   var msPerHour = msPerMinute * 60;
   var msPerDay = msPerHour * 24;
   var msPerMonth = msPerDay * 30;
   var msPerYear = msPerDay * 365;
-
+  
   var elapsed = current - previous;
-
+  
   if (elapsed < msPerMinute) {
        return Math.round(elapsed/1000) + ' seconds ago';   
   }
-
+  
   else if (elapsed < msPerHour) {
        return Math.round(elapsed/msPerMinute) + ' minutes ago';   
   }
-
+  
   else if (elapsed < msPerDay ) {
        return Math.round(elapsed/msPerHour ) + ' hours ago';   
   }
 
   else if (elapsed < msPerMonth) {
-      return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+       return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
   }
-
+  
   else if (elapsed < msPerYear) {
-      return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+       return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+  }
+  
+  else {
+       return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
   }
 
-  else {
-      return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
-  }
+}*/
+
+
+
+
+//function to convert cents to currency
+centsToCurrency(price){
+  return price;
 }
   
   render() {
@@ -116,13 +115,11 @@ timeDifference(current, previous) {
       ref="iScroll"
       style={{ height: "600px", overflow: "auto" }}
       >
-      <h1>Products Grid</h1>
 
-      <p>Here you're sure to find a bargain on some of the finest ascii available to purchase. Be sure to peruse our selection of ascii faces in an exciting range of sizes and prices.</p>
-
-      <p>But first, a word from our sponsors:</p> 
-      <script>document.write(`<img class="ad" src="/ads/?r=' + Math.floor(Math.random()*1000) + '"/>`);</script>
-
+      <Alert color="success">
+        <h2 style={{paddingLeft: '450px'}}>Product List</h2>
+      </Alert>
+      
       <Container>      
                 <Row>
                     <Col>
@@ -135,13 +132,15 @@ timeDifference(current, previous) {
                                         <span style={{fontSize: product.size}}>{product.face}</span>
                                     </Col>
                                     <Col>
-                                        <h5><span>Price:</span> ${product.price}</h5>
+                                        <h5>
+                                          <span>Price:</span> {centsToCurrency(product.price)}
+                                        </h5>
                                     </Col>
                                     <Col>
-                                        <h5><span>Size</span> {product.size} px </h5>
+                                        <h5><span>Size:</span> {product.size} px </h5>
                                     </Col>
                                     <Col>
-                                        {product.date}
+                                       {product.date}
                                     </Col>
                                     <Col>
                                         <Button color="success">Buy</Button>                                        

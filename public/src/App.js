@@ -1,11 +1,13 @@
 import React from 'react';
-import ItemList from './components/ItemList'
+import Ads from './components/Ads';
+import ProductList from './components/ProductList';
 
 function App() {
   return (
     <div className="App">
       <h1>Creatella</h1>
-      <ItemList />
+      <Ads/>
+      <ProductList />
     </div>
   );
 }
